@@ -1,7 +1,4 @@
-"""
-Citrus Leaf Disease Detection - Base CNN + Transfer Learning + Grad-CAM
-Dataset: https://www.kaggle.com/datasets/superlord/citrus-diseases
-"""
+# Dataset: https://www.kaggle.com/datasets/superlord/citrus-diseases
 
 import os
 import random
