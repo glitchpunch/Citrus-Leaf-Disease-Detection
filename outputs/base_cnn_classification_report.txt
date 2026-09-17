@@ -1,0 +1,10 @@
+              precision    recall  f1-score   support
+
+      aphids       0.33      1.00      0.49        42
+    gummosis       0.00      0.00      0.00        47
+     healthy       0.00      0.00      0.00        38
+ leaf_minnor       0.00      0.00      0.00         2
+
+    accuracy                           0.33       129
+   macro avg       0.08      0.25      0.12       129
+weighted avg       0.11      0.33      0.16       129
