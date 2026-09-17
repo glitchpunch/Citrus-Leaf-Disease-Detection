@@ -27,7 +27,6 @@ from sklearn.utils.class_weight import compute_class_weight
 
 import splitfolders
 
-# ----------------------------- CONFIG -----------------------------
 SEED = 42
 IMG_SIZE = (224, 224)
 BATCH_SIZE = 32
@@ -53,7 +52,6 @@ tf.random.set_seed(SEED)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
-# ------------------------- DATASET PREP -------------------------
 def download_dataset_if_needed():
     if os.path.isdir(RAW_DIR) and os.listdir(RAW_DIR):
         return
@@ -98,7 +96,6 @@ def prepare_dataset():
     splitfolders.ratio(class_root, output=SPLIT_DIR, seed=SEED, ratio=SPLIT_RATIO)
 
 
-# ------------------------- DATA GENERATORS -------------------------
 PREPROCESS_FUNCS = {
     "mobilenetv2": mobilenet_v2.preprocess_input,
     "efficientnetb0": efficientnet.preprocess_input,
@@ -143,7 +140,6 @@ def get_class_weights(train_gen):
     return dict(zip(classes, weights))
 
 
-# ------------------------------ MODELS ------------------------------
 def build_base_cnn(input_shape, num_classes):
     inputs = layers.Input(shape=input_shape)
     x = layers.Conv2D(32, 3, activation="relu", padding="same")(inputs)
@@ -188,8 +184,6 @@ def build_transfer_model(name, input_shape, num_classes):
     model = models.Model(inputs=base.input, outputs=outputs, name=name)
     return model, base
 
-
-# ------------------------------ TRAINING ------------------------------
 def get_callbacks(model_name):
     return [
         callbacks.EarlyStopping(monitor="val_loss", patience=5, restore_best_weights=True),
@@ -235,7 +229,6 @@ def train_transfer_model(name, train_gen, val_gen, num_classes):
     return model, combined_history
 
 
-# ------------------------------ PLOTS ------------------------------
 def plot_training_curves(history, model_name):
     fig, axes = plt.subplots(1, 2, figsize=(12, 4))
     axes[0].plot(history["accuracy"], label="Train")
@@ -287,7 +280,6 @@ def plot_roc_curves(y_true_onehot, y_pred_proba, class_names, model_name):
     plt.close(fig)
 
 
-# ---------------------------- EVALUATION ----------------------------
 def specificity_macro(cm):
     total = cm.sum()
     specs = []
@@ -332,7 +324,6 @@ def evaluate_model(model, test_gen, model_name):
     return metrics
 
 
-# ------------------------------ GRAD-CAM ------------------------------
 def find_last_conv_layer(model):
     for layer in reversed(model.layers):
         if len(layer.output.shape) == 4:
@@ -392,7 +383,6 @@ def run_gradcam_demo(model, model_name, test_gen, preprocess_input, num_samples=
             print(f"[{model_name}] Grad-CAM failed on sample {i}: {exc}")
 
 
-# -------------------------------- MAIN --------------------------------
 def main():
     prepare_dataset()
     results = []
